@@ -3,6 +3,7 @@
 import mysql.connector
 
 from mysql.connector import Error
+from library_db_connect import connect_to_db
 
 
 db_name = "Library_MGMT_DB"
@@ -13,8 +14,8 @@ host = "localhost"
 
 # 1. Create an improved, user-friendly command-line interface (CLI) for the Library Management
 #  System with separate menus for each class of the system.
-#from book_class import bookMenu
-#from user_class import userMenu
+
+from user_class import user_menu
 from author_class import authorMenu
 from book_class import book_ops_menu
 
@@ -33,12 +34,7 @@ from book_class import book_ops_menu
 def main():
   while True:
         # establish connection
-    conn = mysql.connector.connect(buffered=True,
-            database = db_name,
-            user = user,
-            password = password,
-            host = host
-            )
+    conn = connect_to_db()
     
     if conn is not None:
      
@@ -61,12 +57,9 @@ def main():
         book_ops_menu()
       elif choice == 2:
         authorMenu()
-        
       elif choice == 3:
-        #userMenu()
-        pass
+        user_menu()
         
-     
       else:
         print("Error, invalid input. ")
 

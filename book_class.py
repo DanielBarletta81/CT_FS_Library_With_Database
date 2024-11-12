@@ -65,15 +65,16 @@ class Book:
 
         ### change functions to incorporate mysql database ###
 
-def add_a_book(id, title, author_id, isbn):
+def add_a_book(id, title, author_id, isbn, publication_date, availability):
     try:
        conn = connect_to_db()
 
        if conn is not None:
 
         cursor = conn.cursor()
-       new_book = (id, title, author_id, isbn)
-       query = 'INSERT INTO books(id, title, author_id, isbn) VALUES (%s, %s, %s, %s)'
+
+       new_book = (id, title, author_id, isbn, publication_date, availability)
+       query = 'INSERT INTO books(id, title, author_id, isbn, publication_date, availability) VALUES (%s, %s, %s, %s, %s, %s)'
        
        cursor.execute(query, new_book)
 
@@ -86,13 +87,18 @@ def add_a_book(id, title, author_id, isbn):
         cursor.close()
         conn.close()
 
-
-def borrow_book(cursor, id,  user_id, book_id, borrow_date):
+ 
+def borrow_book(id,  user_id, book_id, borrow_date):
     try:
-        book_borrowed = ( id, user_id, book_id, borrow_date)
-        query = "INSERT INTO borrowed_books(id, user_id, book_id, borrow_date) VALUES (%s, %s, %s, %s)"
+         conn = connect_to_db()
+
+         if conn is not None:
+
+            cursor = conn.cursor()
+            book_borrowed = ( id, user_id, book_id, borrow_date)
+            query = "INSERT INTO borrowed_books(id, user_id, book_id, borrow_date) VALUES (%s, %s, %s, %s)"
        
-        cursor.execute(query, book_borrowed)
+            cursor.execute(query, book_borrowed)
 
     except mysql.connector.Error as db_err:
         print(f' Database Error: \n {db_err}')
@@ -101,13 +107,24 @@ def borrow_book(cursor, id,  user_id, book_id, borrow_date):
     except Exception as e:
          print(f"An exception occurred:\n {e}")
 
+    finally :
+        cursor.close()
+        conn.close()
+    
+    
 
-def return_book(cursor, id,  user_id, book_id, return_date):
+
+def return_book( id, user_id, book_id, return_date):
     try:
-        book_returned = ( id, user_id, book_id, return_date)
-        query = "INSERT INTO borrowed_books(id, user_id, book_id, return_date) VALUES ( %s, %s, %s, %s)"
+        conn = connect_to_db()
+
+        if conn is not None:
+
+            cursor = conn.cursor()
+            book_returned = ( id, user_id, book_id, return_date)
+            query = 'INSERT INTO borrowed_books(id, user_id, book_id, return_date) VALUES ( %s, %s, %s, %s)'
        
-        cursor.execute(query, book_returned)
+            cursor.execute(query, book_returned)
 
     except mysql.connector.Error as db_err:
         print(f' Database Error: \n {db_err}')
@@ -116,7 +133,9 @@ def return_book(cursor, id,  user_id, book_id, return_date):
     except Exception as e:
          print(f"An exception occurred:\n {e}") 
 
-
+    finally :
+        cursor.close()
+        conn.close()
 
 def book_search(isbn):
 
@@ -146,17 +165,23 @@ def book_search(isbn):
         cursor.close()
         conn.close()
 
-def display_books(cursor):
+def display_books():
              # SQL query to select all books
         # Execute, fetch, and print results
     try:
+        conn = connect_to_db()
+
+        if conn is not None:
+
+            cursor = conn.cursor()
         
-        query = "SELECT * FROM books;"
+            query = "SELECT * FROM books;"
        
-        cursor.execute(query)
-        res = cursor.fetchall()
-        for row in res:
-            print(row)
+            cursor.execute(query)
+            res = cursor.fetchall()
+
+            for row in res:
+                print(row)
            
     
     except mysql.connector.Error as db_err:
@@ -165,6 +190,10 @@ def display_books(cursor):
        
     except Exception as e:
          print(f"An exception occurred: {e}")
+
+    finally :
+        cursor.close()
+        conn.close()
 
 
 
@@ -196,9 +225,11 @@ def book_ops_menu():
                     title = input("Enter book title: ")
                     author_id = int(input("Enter author id: "))
                     isbn = input("Enter book ISBN: ")
-               
-                    add_a_book( id, title, author_id, isbn)
+                    publication_date = input("Enter publication date: ")
 
+               
+                    add_a_book( id, title, author_id, isbn, publication_date, availability=1)
+                    print(f'Book entitled: {title}, added to Library.')
                
        
                 elif choice == 2:
