@@ -2,16 +2,74 @@
 import mysql.connector
 
 from mysql.connector import Error
+from library_db_connect import connect_to_db
 
+# Establish class for User
 
-db_name = "libraryDb"
-user = "root"
-password = "Babinz2023!"
-host = "localhost"
-        
+# Menu Actions needed:
+#Adding a new user with user details. check
+#Viewing user details.
+#Displaying a list of all users. check
+
+class User:
+  
+    def __init__(self, user_id, member_name, username, password):
+        #make private attributes 
+       
+        self.__user_id = user_id
+        self.__member_name = member_name 
+        self.__username = username
+        self.__password = password
+       
+
+    # getters and setters
     
-def add_new_user(cursor, id, name, library_id ):
+   # Encapsulation:
+
+#Apply encapsulation principles by defining private attributes and using 
+# getters and setters for necessary data access.
+
+
+    def get_user_id(self):
+        return self.__user_id
+
+ #   def set_library_id(self, new_library_id):
+  #      self.__library_id = new_library_id
+
+
+    def get_member(self):
+        return self.__member_name
+
+  #  def set_member(self, new_member_name):
+  #      self.__member_name = new_member_name
+
+    def get_username(self):
+        return self.__username
+
+  #  def set_username(self, new_username):
+  #      self.__username = new_username
+
+    def get_password(self):
+        return self.__password
+
+  #  def set_password(self, new_password):
+   #     self.__password = new_password
+
+        #user functions below  VVVV
+
+
+
+    
+def add_new_user(id, name, library_id ):
     try:
+
+        conn = connect_to_db()
+
+        if conn is not None:
+
+            cursor = conn.cursor()
+
+
         new_user = (id, name, library_id)
         query = "INSERT INTO users(id, name, library_id) VALUES (%s, %s, %s)"
         cursor.execute(query, new_user)
@@ -22,11 +80,23 @@ def add_new_user(cursor, id, name, library_id ):
 
     except Exception as e:
           print(f"Exception Occurred: {e}")
-             
-        
+    
+    finally :
+        cursor.close()
+        conn.close()
 
-def view_user_details(cursor, id):
+            
+
+def view_user_details(id):
     try:
+
+        conn = connect_to_db()
+
+        if conn is not None:
+
+            cursor = conn.cursor()
+
+
         id = (id,)
         query = "SELECT * FROM users WHERE id = %s"
         cursor.execute(query, id)
@@ -38,11 +108,21 @@ def view_user_details(cursor, id):
 
     except Exception as e:
           print(f"Exception Occurred: {e}")
-             
-       
+    
+    finally :
+        cursor.close()
+        conn.close()
+    
 
-def display_all_users(cursor):
+def display_all_users():
     try:
+
+        conn = connect_to_db()
+
+        if conn is not None:
+
+            cursor = conn.cursor()
+
         query = "SELECT * FROM users;"
         cursor.execute(query)
         res = cursor.fetchall()
@@ -54,18 +134,15 @@ def display_all_users(cursor):
 
     except Exception as e:
           print(f"Exception Occurred: {e}")
+          
+    finally :
+        cursor.close()
+        conn.close()
     
 def user_menu():
-    # establish connection
-     conn = mysql.connector.connect(buffered=True,
-            database = db_name,
-            user = user,
-            password = password,
-            host = host
-            )
+   
      
-     if conn is not None:
-          
+    while True:
                print("***  Welcome to the User Operations Menu! ***")
                print("\n Menu:")
                print("\n 1. Add a new User")
@@ -75,42 +152,30 @@ def user_menu():
 
                choice = int(input("Please choose an option (1-4): "))
           
-                
+    
                if choice == 4:
                     return
-     try:
-               cursor = conn.cursor()
 
-               if choice == 1:
-                    id = int(input("Enter User Id: "))
-                    name = input("Enter name: ")
-                    library_id = int(input("Enter new library id: "))
-                    add_new_user(cursor, id, name, library_id)
+              
 
-                    conn.commit()
+               elif choice == 1:
+                id = int(input("Enter User Id: "))
+                name = input("Enter name: ")
+                library_id = int(input("Enter new library id: "))
+                add_new_user( id, name, library_id)
+
+                   
 
                elif choice == 2:
                     id = int(input("Enter User Id: "))
-                    view_user_details(cursor, id)
+                    view_user_details(id)
 
-                    conn.commit()
+                    
        
                elif choice == 3:
-                    display_all_users(cursor)
-                    conn.commit()
+                    display_all_users()
+                    
                else:
                     print("Invalid selection, please try again.")
 
-     except mysql.connector.Error as db_err:
-        print(f' Database Error: \n {db_err}')
-       
-       
-     except Exception as e:
-         print(f"An exception occurred:\n {e}")
-   
-     
-     finally:
-            if conn and conn.is_connected():
-                conn.close()
-                print("MySQL connection closed.")
     

@@ -3,6 +3,30 @@
 #  create a robust system that allows users to browse, borrow, return, 
 # and explore a collection of books and the use of modules.
 
+###
+""" def add_author(author_list):
+    id = int(input("What's the new Author Id #? "))
+    author_name = input("What's the new author's name? ")
+    biography = input("Please provide a short biography: ")
+    author_list[id] = Author(id, author_name, biography)
+
+    print(f' New author added:  {author_name}')
+    
+     
+
+def get_author_details(author_list):
+        author_id = int(input("Please enter the author id: "))
+        if author_id in author_list:
+            print(f'Details for selected author: {author_list[author_id].get_author_name()} from their biography: {author_list[author_id].get_biography()}') 
+            
+
+
+def display_authors(author_list):
+       
+        print("Current authors:")
+        for author in author_list:
+            if author:
+                print(f'Author ID: {author} \n Name: {author_list[author].get_author_name()}') """
 
 
 #Apply encapsulation principles by defining private attributes and using getters and setters
