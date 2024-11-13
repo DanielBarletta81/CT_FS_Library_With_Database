@@ -6,12 +6,6 @@ from mysql.connector import Error
 from library_db_connect import connect_to_db
 
 
-
-
-
-
-
-
 # Establish class for Authors
 
 class Author:
@@ -23,18 +17,12 @@ class Author:
         self.__name = name
         self.__biography = biography
 
-
-
 # Menu Actions needed:
 #Adding a new author with author details. 
 #Viewing author details.
 #Displaying a list of all authors. 
 
 
-#Apply encapsulation principles by defining private attributes 
-# and using getters and setters for necessary data access.
-
-      # getters and setters
     def get_author_id(self):
         return self.__id
 
@@ -58,24 +46,12 @@ def add_new_author(id, name, biography):
 
         new_author = (id, name, biography)
         # Insert new author
-        query = "INSERT INTO authors (id, name, biography) VALUES (%s, %s, %s)"
+        query = 'INSERT INTO authors (id, name, biography) VALUES (%s, %s, %s);'
     
         cursor.execute(query, new_author)
-        
-        print(f"Author {new_author.name} added successfully.")
-        return True
-
-       """ cursor = conn.cursor()
-           author = Author(id, name, biography)
-           id = author.get_author_id()
-           name = author.get_author_name()
-           biography = author.get_biography()
-
-          
-           query = "INSERT INTO authors(id, name, biography) VALUES (%s, %s, %s)"
-       
-           cursor.execute(query, author)
- """
+        conn.commit()
+        print(f"Author {new_author} added successfully.")
+ 
     except mysql.connector.Error as db_err:
         print(f' Database Error: \n {db_err}')
        
@@ -86,8 +62,6 @@ def add_new_author(id, name, biography):
     finally :
         cursor.close()
         conn.close()
-
-
 
 
 ### Having issues with this one! getting db error, will come back to fix (11/12/24)

@@ -42,9 +42,9 @@ def main():
      print("\n Menu:")
      print("\n 1. Book Operations Menu.")
      print("\n 2. Author Operations Menu.")
-     print("\n 3. Genre Operations Menu. ")
-     print("\n 4. User Operations Menu. ")
-     print("\n 5. Quit. ")
+     print("\n 3. User Operations Menu. ")
+     print("\n 4. Quit. ")
+     print("---********************---")
 
      choice = int(input("Please choose an option (1-5): "))
 

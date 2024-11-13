@@ -71,9 +71,10 @@ def add_new_user(id, name, library_id ):
 
 
         new_user = (id, name, library_id)
-        query = "INSERT INTO users(id, name, library_id) VALUES (%s, %s, %s)"
+        query ='INSERT INTO users(id, name, library_id) VALUES (%s, %s, %s)'
         cursor.execute(query, new_user)
-        print(f'User has been added to database.')
+        conn.commit()
+        print(f'User {new_user} has been added to database.')
 
     except mysql.connector.Error as db_err:
         print(f' Database Error: \n {db_err}')

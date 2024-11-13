@@ -77,6 +77,8 @@ def add_a_book(id, title, author_id, isbn, publication_date, availability):
        query = 'INSERT INTO books(id, title, author_id, isbn, publication_date, availability) VALUES (%s, %s, %s, %s, %s, %s)'
        
        cursor.execute(query, new_book)
+       conn.commit()
+       print(f'New book added to library: {new_book}')
 
     except mysql.connector.Error as db_err:
         print(f' Database Error: \n {db_err}')
@@ -96,9 +98,11 @@ def borrow_book(id,  user_id, book_id, borrow_date):
 
             cursor = conn.cursor()
             book_borrowed = ( id, user_id, book_id, borrow_date)
-            query = "INSERT INTO borrowed_books(id, user_id, book_id, borrow_date) VALUES (%s, %s, %s, %s)"
+            query = 'INSERT INTO borrowed_books(id, user_id, book_id, borrow_date) VALUES (%s, %s, %s, %s)'
        
             cursor.execute(query, book_borrowed)
+            conn.commit()
+            print(f'Book: {book_id}, borrowed by user with id: {user_id}')
 
     except mysql.connector.Error as db_err:
         print(f' Database Error: \n {db_err}')
@@ -114,17 +118,19 @@ def borrow_book(id,  user_id, book_id, borrow_date):
     
 
 
-def return_book( id, user_id, book_id, return_date):
+def return_book( id, user_id, book_id, borrow_date, return_date):
     try:
         conn = connect_to_db()
 
         if conn is not None:
 
             cursor = conn.cursor()
-            book_returned = ( id, user_id, book_id, return_date)
-            query = 'INSERT INTO borrowed_books(id, user_id, book_id, return_date) VALUES ( %s, %s, %s, %s)'
+            book_returned = ( id, user_id, book_id, borrow_date, return_date)
+            query = 'INSERT INTO borrowed_books(id, user_id, book_id, borrow_date, return_date) VALUES ( %s, %s, %s, %s, %s)'
        
             cursor.execute(query, book_returned)
+            conn.commit()
+            print(f'Book: {book_id}, returned by user with id: {user_id}')
 
     except mysql.connector.Error as db_err:
         print(f' Database Error: \n {db_err}')
@@ -175,7 +181,7 @@ def display_books():
 
             cursor = conn.cursor()
         
-            query = "SELECT * FROM books;"
+            query = 'SELECT * FROM books'
        
             cursor.execute(query)
             res = cursor.fetchall()
@@ -224,7 +230,7 @@ def book_ops_menu():
                     id = int(input("Enter new book id: "))
                     title = input("Enter book title: ")
                     author_id = int(input("Enter author id: "))
-                    isbn = input("Enter book ISBN: ")
+                    isbn = int(input("Enter book ISBN: "))
                     publication_date = input("Enter publication date: ")
 
                
@@ -257,8 +263,9 @@ def book_ops_menu():
                     id = int(input("Enter id for transaction: "))
                     user_id = int(input("Enter user id for returned book: "))
                     book_id = int(input("Enter book id for returned book: "))
+                    borrow_date = input("What date was book borrowed? ")
                     return_date = input("What date was book returned? ")
-                    return_book(id, user_id, book_id, return_date)
+                    return_book(id, user_id, book_id, borrow_date, return_date)
                 
        
                 else:
